@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>What shows are watching?</title>
+</head>
+<body>
+    <h1>Hey there! What should we all watch?</h1>
+    <section id="insert-new">
+        <form id="new">
+            <label>
+                What's missing?
+                <input type="text" name="show">
+            </label>
+        </form>
+    </section>
+    <section id="shows"></section>
+    <script id="showsTemplate" type="text/handlebars">
+        {{#shows}}
+            <ul>
+                <li>{{name}}</li>
+            </ul>
+        {{/shows}}
+    </script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script type="text/javascript" src="backbone-min.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+</body>
+</html>
