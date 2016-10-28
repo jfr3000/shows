@@ -5,38 +5,60 @@ Array.prototype.slice.call(templates).forEach((script) => {
     Handlebars.templates[script.id] = Handlebars.compile(script.innerHTML);
 });
 
-const Shows = Backbone.Model.extend({
-    initialize: function() {
-        this.fetch();
-    },
-    url: '/shows',
-});
-
-let shows = new Shows();
-
-let ShowsView = Backbone.View.extend({
-    initialize: function() {
-        this.model.on('change', () => {
-            this.render();
-        });
+const Show = Backbone.Model.extend({
+    initialize: function(options) {
+        this.name = options;
     },
     render: function() {
-        let html = Handlebars.templates.showsTemplate(this.model.attributes);
-        this.$el.html(html);
+        console.log("render");
+        return Handlebars.templates.showItem(this.name);
     },
-    el: "#shows",
-    model: shows
+    url: '/show',
+});
+let show = new Show();
+
+const Shows = Backbone.Collection.extend({
+    initialize: function() {
+        this.fetch({
+            success: function(result) {
+                this.attributes = result;
+            }
+        });
+    },
+    model: Show,
+    url: "/shows"
 });
 
-new ShowsView();
+var showsCollection = new Shows();
+
+let ShowsView = Backbone.View.extend({
+    initialize: function(options) {
+        this.render(options);
+    },
+    render: function(shows) {
+        let html = "";
+        shows.models.forEach(function(show) {
+            html += new Show(show.attributes).render();
+        });
+        this.$el.html(html);
+    },
+    el: "#shows"
+});
+new ShowsView(new Shows());
 
 let FormView = Backbone.View.extend({
     events: {
         submit: function(e) {
             e.preventDefault();
-            let myShows = shows.get('shows').slice();
-            myShows.push({name: inputField.val()});
-            shows.save({shows: myShows});
+            show.save({name: inputField.val()});
+            showsCollection.fetch({
+                success: function (result) {
+                    new ShowsView(result);
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
             inputField.val("");
         }
     },
